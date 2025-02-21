@@ -3,6 +3,7 @@
 <head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 
   <title>Gestion des salariés</title>
+  <th:block th:replace="~{common :: navbar}"></th:block>
   <link rel="stylesheet" href="/static/bootstrap.min.css">
   <link rel="stylesheet" href="/static/font-awesome.css">
 </head>
@@ -17,50 +18,56 @@
 
     <div class="collapse navbar-collapse" id="navbarSupportedContent">
       <ul class="navbar-nav mr-auto">
-        <li><a href="http://localhost:8080/salaries?page=0&amp;size=10&amp;sortProperty=nom&amp;sortDirection=ASC" class="nav-link">Liste des salariés <span class="badge badge-primary"></span></a></li>
+        <li><a href="http://localhost:8080/salaries?page=0&amp;size=10&amp;sortProperty=nom&amp;sortDirection=ASC" class="nav-link">Liste des salariés <span class="badge badge-primary" th:text="${countSalaries}">26</span></a></li>
       </ul>
 
       <form class="form-inline my-2 my-lg-0" role="search" action="http://localhost:8080/salaries" method="GET">
         <div class="form-group">
-          <input name="nom" class="form-control" placeholder="Rechercher un nom" type="text">
+          <input name="nom" class="form-control" placeholder="Rechercher un nom" type="text" th:value="${nom}">
         </div>
         <button type="submit" class="btn btn-outline-success ml-2 my-2 my-sm-0">Rechercher</button>
       </form>
     </div>
   </nav>
 </div>
+
 <div class="container">
   <div class="row">
     <div class="col-lg-12">
       <h1>Liste des salariés</h1>
       <a href="/salaries/aide/new" class="btn btn-primary">Nouveau salarié</a>
-      <table class="table table-hover table-striped">
-        <thead>
-        <tr>
-          <th scope="col">ID
-            <a href="/salaries?page=0&size=10&sortProperty=id&sortDirection=DESC"><i class="fa fa-chevron-up"></i></a>
-          </th>
-          <th scope="col">Nom
-            <a href="/salaries?page=0&size=10&sortProperty=nom&sortDirection=DESC"><i class="fa fa-chevron-up"></i></a>
-          </th>
-          <th scope="col"></th>
-        </tr>
-        </thead>
-        <tbody>
-        <tr>
-          <th scope="row">1</th>
-          <td>Jeanne Dupond</td>
-          <td><a href="/salaries/aide/2" class="btn btn-primary ember-view">Détail</a></td>
-        </tr>
-        <tr>
-          <th scope="row">2</th>
-          <td>Robert Martin</td>
-          <td><a href="/salaries/aide/3" class="btn btn-primary ember-view">Détail</a></td>
-        </tr>
-        </tbody>
-      </table>
+
+      <div th:if="${#lists.isEmpty(salaries)}">
+        <p>Aucun salarié trouvé pour ce nom.</p>
+      </div>
+
+      <div th:if="${not #lists.isEmpty(salaries)}">
+        <p th:text="'Nombre de résultats : ' + ${salaries.size()}"></p>
+        <table class="table table-hover table-striped">
+          <thead>
+          <tr>
+            <th scope="col">ID
+              <a href="/salaries?page=0&size=10&sortProperty=id&sortDirection=DESC"><i class="fa fa-chevron-up"></i></a>
+            </th>
+            <th scope="col">Nom
+              <a href="/salaries?page=0&size=10&sortProperty=nom&sortDirection=DESC"><i class="fa fa-chevron-up"></i></a>
+            </th>
+            <th scope="col"></th>
+          </tr>
+          </thead>
+          <tbody>
+          <tr th:each="salarie : ${salaries}">
+            <th scope="row" th:text="${salarie.id}"></th>
+            <td th:text="${salarie.nom}"></td>
+            <td><a th:href="@{'/salaries/' + ${salarie.id}}" class="btn btn-primary">Détail</a></td>
+          </tr>
+          </tbody>
+        </table>
+      </div>
+
       <div class="row">
-        <div class="col-lg-6"><p>Affichage des salariés 1 à 10 sur un total de <span>11</span></p>
+        <div class="col-lg-6">
+          <p>Affichage des salariés 1 à 10 sur un total de <span>11</span></p>
         </div>
         <div class="col-lg-6">
           <ul class="pagination">
@@ -69,10 +76,14 @@
             </li>
             <li><a href="#" class="page-link">Page 1</a></li>
             <li class="page-item ">
-              <a class="page-link" href="/salaries?page=1&amp;size=10&amp;sortProperty=nom&amp;sortDirection=ASC">»</a></li>
-          </ul></div>
+              <a class="page-link" href="/salaries?page=1&amp;size=10&amp;sortProperty=nom&amp;sortDirection=ASC">»</a>
+            </li>
+          </ul>
+        </div>
       </div>
     </div>
   </div>
 </div>
-</div></body></html>
+
+</body>
+</html>

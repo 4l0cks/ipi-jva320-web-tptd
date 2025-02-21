@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <th:block th:replace="~{common :: head}"></th:block>
+  <link rel="stylesheet" href="/static/bootstrap.min.css">
+  <link rel="stylesheet" href="/static/font-awesome.css">
+</head>
+<body>
+
+<div>
+  <nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <a class="navbar-brand" href="http://localhost:8080/">Gestion des salariés</a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav mr-auto">
+        <li><a href="http://localhost:8080/salaries" class="nav-link">Liste des salariés</a></li>
+      </ul>
+    </div>
+  </nav>
+</div>
+
+<div class="container mt-4">
+  <h1>Créer un nouveau salarié</h1>
+
+  <div th:if="${erreur}" class="alert alert-danger">
+    <p th:text="${erreur}"></p>
+  </div>
+
+  <form th:action="@{/salaries/save}" method="post" th:object="${salarie}">
+    <div class="form-group">
+      <label for="nom">Nom :</label>
+      <input type="text" class="form-control" id="nom" th:field="*{nom}" required />
+    </div>
+
+    <div class="form-group">
+      <label for="moisDebutContrat">Date de début du contrat :</label>
+      <input type="date" class="form-control" id="moisDebutContrat" th:field="*{moisDebutContrat}" required />
+    </div>
+
+    <div class="form-group">
+      <label for="moisEnCours">Mois en cours :</label>
+      <input type="date" class="form-control" id="moisEnCours" th:field="*{moisEnCours}" required />
+    </div>
+
+    <div class="form-group">
+      <label for="joursTravaillesAnneeN">Jours travaillés (Année N) :</label>
+      <input type="number" class="form-control" step="0.01" id="joursTravaillesAnneeN" th:field="*{joursTravaillesAnneeN}" required />
+    </div>
+
+    <div class="form-group">
+      <label for="congesPayesAcquisAnneeN">Congés payés acquis (Année N) :</label>
+      <input type="number" class="form-control" step="0.01" id="congesPayesAcquisAnneeN" th:field="*{congesPayesAcquisAnneeN}" required />
+    </div>
+
+    <div class="form-group">
+      <label for="joursTravaillesAnneeNMoins1">Jours travaillés (Année N-1) :</label>
+      <input type="number" class="form-control" step="0.01" id="joursTravaillesAnneeNMoins1" th:field="*{joursTravaillesAnneeNMoins1}" required />
+    </div>
+
+    <div class="form-group">
+      <label for="congesPayesAcquisAnneeNMoins1">Congés payés acquis (Année N-1) :</label>
+      <input type="number" class="form-control" step="0.01" id="congesPayesAcquisAnneeNMoins1" th:field="*{congesPayesAcquisAnneeNMoins1}" required />
+    </div>
+
+    <div class="form-group">
+      <label for="congesPayesPrisAnneeNMoins1">Congés payés pris (Année N-1) :</label>
+      <input type="number" class="form-control" step="0.01" id="congesPayesPrisAnneeNMoins1" th:field="*{congesPayesPrisAnneeNMoins1}" required />
+    </div>
+
+    <button type="submit" class="btn btn-primary">Créer</button>
+  </form>
+
+  <br>
+  <a href="/salaries" class="btn btn-secondary">Retour à la liste</a>
+</div>
+
+</body>
+</html>

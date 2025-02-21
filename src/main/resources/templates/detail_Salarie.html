@@ -1,12 +1,17 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
-<head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-    
-    <title>Gestion des salariés</title>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <th:block th:replace="~{common :: head}"></th:block>
+    <th:block th:replace="~{common :: navbar}"></th:block>
     <link rel="stylesheet" href="/static/bootstrap.min.css">
     <link rel="stylesheet" href="./static/font-awesome.css">
 </head>
 <body>
+
+<div th:if="${erreur}">
+    <p th:text="${erreur}" style="color: red;"></p>
+</div>
 
 <div>
     <nav class="navbar navbar-expand-lg navbar-light bg-light">
@@ -17,7 +22,7 @@
 
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
             <ul class="navbar-nav mr-auto">
-                <li><a href="http://localhost:8080/salaries?page=0&amp;size=10&amp;sortProperty=nom&amp;sortDirection=ASC" class="nav-link">Liste des salariés <span class="badge badge-primary">26</span></a></li>
+                <li><a href="http://localhost:8080/salaries?page=0&amp;size=10&amp;sortProperty=nom&amp;sortDirection=ASC" class="nav-link">Liste des salariés <span class="badge badge-primary" th:text="${countSalaries}">26</span></a></li>
             </ul>
 
             <form class="form-inline my-2 my-lg-0" role="search" action="http://localhost:8080/salaries" method="GET">
@@ -33,109 +38,72 @@
 <div class="container">
     <div th:text="#{msg.salarie}"></div><!-- TODO better messages example -->
 
-    <h2>Détail du salarié</h2>
-    
-    <form id="saveForm" action="http://localhost:8080/salaries/aide/10" method="post" class="row">
+    <div th:if="${salarie}">
+        <h2>Détail du salarié</h2>
+        <p><strong>Nom :</strong> <span th:text="${salarie.nom}"></span></p>
+        <p><strong>Date de début du contrat :</strong> <span th:text="${salarie.moisDebutContrat}"></span></p>
+        <p><strong>Mois en cours :</strong> <span th:text="${salarie.moisEnCours}"></span></p>
 
-        <div class="col-lg-6">
-            <div class="form-group">
-                <label class="form-control-label" for="id">ID</label>
-                <input type="text" value="10" class="form-control" name="id" id="id" disabled="true">
+        <h2>Année N</h2>
+        <p><strong>Jours travaillés :</strong> <span th:text="${salarie.joursTravaillesAnneeN}"></span></p>
+        <p><strong>Congés payés acquis :</strong> <span th:text="${salarie.congesPayesAcquisAnneeN}"></span></p>
 
-                <label class="form-control-label" for="nom">Nom</label>
-                <input type="text" value="Jean Dupont" class="form-control" name="nom" id="nom">
+        <h2>Année N-1</h2>
+        <p><strong>Jours travaillés :</strong> <span th:text="${salarie.joursTravaillesAnneeNMoins1}"></span></p>
+        <p><strong>Congés payés acquis :</strong> <span th:text="${salarie.congesPayesAcquisAnneeNMoins1}"></span></p>
+        <p><strong>Congés payés pris :</strong> <span th:text="${salarie.congesPayesPrisAnneeNMoins1}"></span></p>
 
-                <label class="form-control-label" for="nom">moisEnCours</label>
-                <input type="date" value="03/2023" class="form-control" name="moisEnCours"
-                       id="moisEnCours">
+        <div th:if="${isEdit}">
+            <h3>Modifier les informations du salarié</h3>
+            <form th:action="@{/salaries/{id}(id=${salarie.id})}" method="post" th:object="${salarie}">
+                <label>Nom :</label>
+                <input type="text" th:field="*{nom}" required />
+                <br>
 
-                <label class="form-control-label" for="nom">moisDebutContrat</label>
-                <input type="date" value="08/2022" class="form-control" name="moisDebutContrat" id="moisDebutContrat">
-            </div>
+                <label>Date de début du contrat :</label>
+                <input type="date" th:field="*{moisDebutContrat}" required />
+                <br>
+
+                <label>Mois en cours :</label>
+                <input type="date" th:field="*{moisEnCours}" required />
+                <br>
+
+                <h3>Année N</h3>
+                <label>Jours travaillés :</label>
+                <input type="number" step="0.01" th:field="*{joursTravaillesAnneeN}" required />
+                <br>
+
+                <label>Congés payés acquis :</label>
+                <input type="number" step="0.01" th:field="*{congesPayesAcquisAnneeN}" required />
+                <br>
+
+                <h3>Année N-1</h3>
+                <label>Jours travaillés :</label>
+                <input type="number" step="0.01" th:field="*{joursTravaillesAnneeNMoins1}" required />
+                <br>
+
+                <label>Congés payés acquis :</label>
+                <input type="number" step="0.01" th:field="*{congesPayesAcquisAnneeNMoins1}" required />
+                <br>
+
+                <label>Congés payés pris :</label>
+                <input type="number" step="0.01" th:field="*{congesPayesPrisAnneeNMoins1}" required />
+                <br>
+
+                <button type="submit">Enregistrer</button>
+            </form>
         </div>
 
-        <div class="col-lg-6">
-            <div class="form-group">
-
-                <div>
-                    <label class="form-control-label" for="nom">joursTravaillesAnneeN</label>
-                    <div class="input-group">
-                        <input type="number" step="0.5" value="20" class="form-control" name="joursTravaillesAnneeN" id="joursTravaillesAnneeN">
-                        <div class="input-group-append">
-                            <span class="input-group-text">j</span>
-                        </div>
-                    </div>
-                </div>
-
-                <div>
-                    <label class="form-control-label" for="nom">congesPayesAcquisAnneeN</label>
-                    <div class="input-group">
-                        <input type="number" step="0.5" value="2.5" class="form-control" name="congesPayesAcquisAnneeN" id="congesPayesAcquisAnneeN">
-                    <div class="input-group-append">
-                        <span class="input-group-text">j</span>
-                    </div>
-                </div>
-            </div>
-            </div>
-        </div>
-        
-
-        <div class="col-lg-6">
-            <div>
-                <label class="form-control-label" for="nom">joursTravaillesAnneeNMoins1</label>
-                <div class="input-group">
-                    <input type="number" step="0.5" value="80" class="form-control" name="joursTravaillesAnneeNMoins1" id="joursTravaillesAnneeNMoins1">
-                    <div class="input-group-append">
-                        <span class="input-group-text">j</span>
-                    </div>
-                </div>
-            </div>
-
-            <div>
-                <label class="form-control-label" for="nom">congesPayesAcquisAnneeNMoins1</label>
-                <div class="input-group">
-                    <input type="number" step="0.5" value="10" class="form-control" name="congesPayesAcquisAnneeNMoins1" id="congesPayesAcquisAnneeNMoins1">
-                    <div class="input-group-append">
-                        <span class="input-group-text">j</span>
-                    </div>
-                </div>
-            </div>
-
-            <div>
-                <label class="form-control-label" for="nom">congesPayesPrisAnneeNMoins1</label>
-                <div class="input-group">
-                    <input type="number" step="0.5" value="4" class="form-control" name="congesPayesPrisAnneeNMoins1" id="congesPayesPrisAnneeNMoins1">
-                    <div class="input-group-append">
-                        <span class="input-group-text">j</span>
-                    </div>
-                </div>
-            </div>
+        <div>
+            <a th:href="@{/salaries/{id}/delete(id=${salarie.id})}" class="btn btn-danger" onclick="return confirm('Êtes-vous sûr de vouloir supprimer ce salarié ?')">Supprimer</a>
         </div>
 
-        
-    </form>
-    
-    <div class="row">
-        <div class="col-lg-6">
-            <ul class="list-group list-unstyled">
-                <li class="alert alert-danger" role="alert">Erreur dans un champ !</li>
-            </ul>
-        </div>
-    </div>
-    <div class="row mt-2">
-        <div class="col-lg-6">
-            <input form="saveForm" class="btn btn-primary" type="submit" value="Enregistrer">
-            <a href="/salaries/10/delete" class="btn btn-danger">Supprimer</a>
-        </div>
     </div>
 
-    <div class="row">
-    <table>
-        <tr><td class="alert alert-danger" role="alert">Erreur de type de données !</td></tr>
-    </table>
-    <div>Erreur globale spécifique !</div>
+    <div th:if="${salarie == null}">
+        <p>Salarie non trouvé.</p>
     </div>
 </div>
 
-
-</body></html>
+</body>
+</html>

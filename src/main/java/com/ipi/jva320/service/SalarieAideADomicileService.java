@@ -4,6 +4,7 @@ import com.ipi.jva320.exception.SalarieException;
 import com.ipi.jva320.model.Entreprise;
 import com.ipi.jva320.model.SalarieAideADomicile;
 import com.ipi.jva320.repository.SalarieAideADomicileRepository;
+import javax.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -73,8 +74,12 @@ public class SalarieAideADomicileService {
      * @return le salarie
      */
     public SalarieAideADomicile getSalarie(Long id) {
-        Optional<SalarieAideADomicile> res = salarieAideADomicileRepository.findById(id);
-        return res.isEmpty() ? null : res.get();
+        Optional<SalarieAideADomicile> salarie = salarieAideADomicileRepository.findById(id);
+        if (salarie.isPresent()) {
+            return salarie.get();
+        } else {
+            throw new EntityNotFoundException("Salarie non trouvé avec l'ID: " + id);
+        }
     }
 
     /**
